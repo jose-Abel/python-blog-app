@@ -1,18 +1,48 @@
-from flask import Flask, render_template, request
-import requests
-import smtplib
+from flask import Flask, render_template, redirect, url_for
+from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired, URL
+from flask_ckeditor import CKEditor, CKEditorField
 
-all_posts = requests.get("https://api.npoint.io/43644ec4f0013682fc0d").json()
 
-OWN_EMAIL = "EMAIL ADDRESS"
-OWN_PASSWORD = "EMAIL PASSWORD"
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+ckeditor = CKEditor(app)
+Bootstrap(app)
+
+##CONNECT TO DB
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+##CONFIGURE TABLE
+class BlogPost(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=False)
+    subtitle = db.Column(db.String(250), nullable=False)
+    date = db.Column(db.String(250), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    author = db.Column(db.String(250), nullable=False)
+    img_url = db.Column(db.String(250), nullable=False)
+
+
+##WTForm
+class CreatePostForm(FlaskForm):
+    title = StringField("Blog Post Title", validators=[DataRequired()])
+    subtitle = StringField("Subtitle", validators=[DataRequired()])
+    author = StringField("Your Name", validators=[DataRequired()])
+    img_url = StringField("Blog Image URL", validators=[DataRequired(), URL()])
+    body = StringField("Blog Content", validators=[DataRequired()])
+    submit = SubmitField("Submit Post")
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def home():
-    return render_template("index.html", posts=all_posts)
+    return render_template("index.html", all_posts=posts)
 
 
 @app.route('/about')
@@ -22,32 +52,16 @@ def about_page():
 
 @app.route('/contact', methods=["GET", "POST"])
 def contact_page():
-    if request.method == "POST":
-        data = request.form
-        send_email(data["name"], data["email"], data["phone"], data["message"])
-        return render_template("contact.html", msg_sent=True)
-
-    return render_template("contact.html", msg_sent=False)
+    return render_template("contact.html")
 
 
-@app.route("/post/<num>")
-def go_post(num):
-    num_to_int = int(num)
+@app.route("/post/<int:num>")
+def show_post(index):
     requested_post = None
-
-    for post in all_posts:
-        if post["id"] == num_to_int:
-            requested_post = post
-
+    for blog_post in posts:
+        if blog_post["id"] == index:
+            requested_post = blog_post
     return render_template("post.html", post=requested_post)
-
-
-def send_email(name, email, phone, message):
-    email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nMessage:{message}"
-    with smtplib.SMTP("smtp.gmail.com") as connection:
-        connection.starttls()
-        connection.login(OWN_EMAIL, OWN_PASSWORD)
-        connection.sendmail(OWN_EMAIL, OWN_EMAIL, email_message)
 
 
 if __name__ == "__main__":

@@ -1,14 +1,14 @@
- {% include "header.html" %}
+{% include "header.html" %}
 
- <!-- Page Header -->
-  <header class="masthead" style="background-image: url('{{ url_for('static', filename='img/home-bg.jpg')}}')">
+  <!-- Page Header -->
+  <header class="masthead" style="background-image: url('https://images.unsplash.com/photo-1470092306007-055b6797ca72?ixlib=rb-1.2.1&auto=format&fit=crop&w=668&q=80')">
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
-            <h1>Clean Blog</h1>
-            <span class="subheading">A Blog Theme by Start Bootstrap</span>
+            <h1>Angela's Blog</h1>
+            <span class="subheading">A collection of Angela's random musings.</span>
           </div>
         </div>
       </div>
@@ -19,32 +19,31 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        {% for blog_post in posts: %}
-          <div class="post-preview">
-            <a href="{{url_for('go_post', num=blog_post.id)}}">
-              <h2 class="post-title">
-                {{blog_post.title}}
-              </h2>
-              <h3 class="post-subtitle">
-                {{blog_post.subtitle}}
-              </h3>
-            </a>
-            <p class="post-meta">Posted by
-              <a href="#">{{blog_post.author}}</a>
-              on {{blog_post.date}}</p>
-          </div>
-          <hr>
+        {% for post in all_posts %}
+        <div class="post-preview">
+          <a href="{{ url_for('show_post', index=post.id) }}">
+            <h2 class="post-title">
+              {{post.title}}
+            </h2>
+            <h3 class="post-subtitle">
+              {{post.subtitle}}
+            </h3>
+          </a>
+          <p class="post-meta">Posted by
+            <a href="#">{{post.author}}</a>
+            on {{post.date}}</p>
+        </div>
+        <hr>
         {% endfor %}
 
-        <!-- Pager -->
+
+        <!-- New Post -->
         <div class="clearfix">
-          <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+          <a class="btn btn-primary float-right" href="#">Create New Post</a>
         </div>
       </div>
     </div>
   </div>
-
   <hr>
 
-  <!-- Footer -->
-  {% include "footer.html" %}
+{% include "footer.html" %}
