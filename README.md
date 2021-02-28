@@ -18,16 +18,13 @@ Multiple page website of a Blog App build with Python Flask framework consisting
 - Linkedin: [Jose Abel Ramirez Frontany](https://www.linkedin.com/in/jose-abel-ramirez-frontany-7674a842/)
 
 ## Getting Started
-You can clone this code anytime and load the HTML on your browser.
+You can clone this code anytime and run it locally with Pycharm.
 
 ## Live version
 
 
 ### Setup
 You can download the source code with any method.
-
-### Acknowledgments
-Appreciate the teams at Udemy and the creator of the course Jonas Schmedtmann since allows me to learn a lot of CSS and Sass concepts and design principles that is pushing my software development career higher.
 
 
 ## 📝 License
